@@ -5,6 +5,9 @@ from pathlib import Path
 
 from suspended_sediment_models import (
     DataSet,
+    KNNRegressor,
+    LinearRegressionGD,
+    MeanRegressor,
     compare_models,
     read_csv_dataset,
     train_test_split,
@@ -21,10 +24,12 @@ class SuspendedSedimentModelTests(unittest.TestCase):
         names = [result.model_name for result in results]
 
         self.assertEqual(len(results), 3)
-        self.assertCountEqual(names, ["KNNRegressor(k=3)", "LinearRegressionGD", "MeanBaseline"])
+        self.assertCountEqual(
+            names, [KNNRegressor.name, LinearRegressionGD.name, MeanRegressor.name]
+        )
         self.assertLessEqual(results[0].rmse, results[1].rmse)
         self.assertLessEqual(results[1].rmse, results[2].rmse)
-        self.assertEqual(results[-1].model_name, "MeanBaseline")
+        self.assertEqual(results[-1].model_name, MeanRegressor.name)
         self.assertLess(results[0].rmse, results[-1].rmse)
 
     def test_read_csv_dataset_supports_target_and_feature_selection(self):

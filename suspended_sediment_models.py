@@ -8,6 +8,10 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable, Sequence
 
+DEFAULT_LEARNING_RATE = 0.01
+DEFAULT_EPOCHS = 1000
+MIN_DATASET_ROWS = 3
+
 
 @dataclass
 class DataSet:
@@ -39,7 +43,9 @@ class MeanRegressor:
 class LinearRegressionGD:
     name = "LinearRegressionGD"
 
-    def __init__(self, learning_rate: float = 0.01, epochs: int = 1000) -> None:
+    def __init__(
+        self, learning_rate: float = DEFAULT_LEARNING_RATE, epochs: int = DEFAULT_EPOCHS
+    ) -> None:
         self.learning_rate = learning_rate
         self.epochs = epochs
         self._weights: list[float] = []
@@ -153,8 +159,10 @@ def read_csv_dataset(path: Path, target_column: str, feature_columns: Iterable[s
             features.append([float(row[field]) for field in selected_features])
             targets.append(float(row[target_column]))
 
-    if len(features) < 3:
-        raise ValueError("CSV must contain at least 3 rows for train/test evaluation")
+    if len(features) < MIN_DATASET_ROWS:
+        raise ValueError(
+            f"CSV must contain at least {MIN_DATASET_ROWS} rows for train/test evaluation"
+        )
 
     return DataSet(features=features, targets=targets)
 
