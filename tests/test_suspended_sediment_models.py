@@ -9,7 +9,10 @@ from suspended_sediment_models import (
     LinearRegressionGD,
     MeanRegressor,
     compare_models,
+    mae,
     read_csv_dataset,
+    r2,
+    rmse,
     train_test_split,
 )
 
@@ -63,6 +66,14 @@ class SuspendedSedimentModelTests(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             train_test_split(dataset, test_ratio=1.0)
+
+    def test_metric_functions_return_expected_values(self):
+        actual = [3.0, -0.5, 2.0, 7.0]
+        predicted = [2.5, 0.0, 2.0, 8.0]
+
+        self.assertAlmostEqual(mae(actual, predicted), 0.5)
+        self.assertAlmostEqual(rmse(actual, predicted), 0.6123724357, places=6)
+        self.assertAlmostEqual(r2(actual, predicted), 0.9486081370, places=6)
 
 
 if __name__ == "__main__":

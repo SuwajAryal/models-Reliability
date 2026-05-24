@@ -178,7 +178,7 @@ def train_test_split(dataset: DataSet, test_ratio: float = 0.2, seed: int = 42) 
     indices = list(range(len(dataset.features)))
     random.Random(seed).shuffle(indices)
 
-    test_count = max(1, int(len(indices) * test_ratio))
+    test_count = max(1, int((len(indices) * test_ratio) + 0.5))
     if test_count >= len(indices):
         test_count = len(indices) - 1
 
