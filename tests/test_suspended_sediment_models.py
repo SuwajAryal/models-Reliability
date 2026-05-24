@@ -7,6 +7,7 @@ from suspended_sediment_models import (
     DataSet,
     compare_models,
     read_csv_dataset,
+    train_test_split,
 )
 
 
@@ -21,6 +22,8 @@ class SuspendedSedimentModelTests(unittest.TestCase):
 
         self.assertEqual(len(results), 3)
         self.assertCountEqual(names, ["KNNRegressor(k=3)", "LinearRegressionGD", "MeanBaseline"])
+        self.assertLessEqual(results[0].rmse, results[1].rmse)
+        self.assertLessEqual(results[1].rmse, results[2].rmse)
         self.assertEqual(results[-1].model_name, "MeanBaseline")
         self.assertLess(results[0].rmse, results[-1].rmse)
 
@@ -42,6 +45,15 @@ class SuspendedSedimentModelTests(unittest.TestCase):
 
             self.assertEqual(dataset.features, [[10.0, 5.0], [12.0, 8.0], [14.0, 6.0]])
             self.assertEqual(dataset.targets, [30.0, 36.0, 42.0])
+
+    def test_train_test_split_rejects_zero_and_one_test_ratio(self):
+        dataset = DataSet(features=[[1.0], [2.0], [3.0]], targets=[1.0, 2.0, 3.0])
+
+        with self.assertRaises(ValueError):
+            train_test_split(dataset, test_ratio=0.0)
+
+        with self.assertRaises(ValueError):
+            train_test_split(dataset, test_ratio=1.0)
 
 
 if __name__ == "__main__":
