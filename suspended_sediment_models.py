@@ -63,6 +63,8 @@ class LinearRegressionGD:
         return normalized
 
     def fit(self, features: Sequence[Sequence[float]], targets: Sequence[float]) -> None:
+        if not features:
+            raise ValueError("features cannot be empty")
         feature_count = len(features[0])
         self._means = [
             sum(row[idx] for row in features) / len(features) for idx in range(feature_count)
@@ -168,6 +170,8 @@ def read_csv_dataset(path: Path, target_column: str, feature_columns: Iterable[s
 
 
 def train_test_split(dataset: DataSet, test_ratio: float = 0.2, seed: int = 42) -> tuple[DataSet, DataSet]:
+    if len(dataset.features) < 2:
+        raise ValueError("dataset must contain at least 2 rows")
     if not 0 < test_ratio < 1:
         raise ValueError("test_ratio must be between 0 and 1")
 
@@ -194,16 +198,26 @@ def train_test_split(dataset: DataSet, test_ratio: float = 0.2, seed: int = 42) 
     return DataSet(train_features, train_targets), DataSet(test_features, test_targets)
 
 
+def _validate_metric_inputs(actual: Sequence[float], predicted: Sequence[float]) -> None:
+    if not actual or not predicted:
+        raise ValueError("actual and predicted must be non-empty")
+    if len(actual) != len(predicted):
+        raise ValueError("actual and predicted must have the same length")
+
+
 def mae(actual: Sequence[float], predicted: Sequence[float]) -> float:
+    _validate_metric_inputs(actual, predicted)
     return sum(abs(a - p) for a, p in zip(actual, predicted)) / len(actual)
 
 
 def rmse(actual: Sequence[float], predicted: Sequence[float]) -> float:
+    _validate_metric_inputs(actual, predicted)
     squared_error = sum((a - p) ** 2 for a, p in zip(actual, predicted)) / len(actual)
     return math.sqrt(squared_error)
 
 
 def r2(actual: Sequence[float], predicted: Sequence[float]) -> float:
+    _validate_metric_inputs(actual, predicted)
     mean_actual = sum(actual) / len(actual)
     total_variance = sum((value - mean_actual) ** 2 for value in actual)
     if total_variance == 0:

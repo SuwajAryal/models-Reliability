@@ -29,6 +29,10 @@ class SuspendedSedimentModelTests(unittest.TestCase):
         )
         self.assertLessEqual(results[0].rmse, results[1].rmse)
         self.assertLessEqual(results[1].rmse, results[2].rmse)
+        self.assertGreaterEqual(results[0].mae, 0.0)
+        self.assertGreaterEqual(results[-1].mae, 0.0)
+        self.assertLessEqual(results[0].r2, 1.0)
+        self.assertLessEqual(results[-1].r2, 1.0)
         self.assertEqual(results[-1].model_name, MeanRegressor.name)
         self.assertLess(results[0].rmse, results[-1].rmse)
 
