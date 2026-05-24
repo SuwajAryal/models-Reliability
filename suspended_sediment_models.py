@@ -106,10 +106,11 @@ class LinearRegressionGD:
 
 
 class KNNRegressor:
-    name = "KNNRegressor(k=3)"
+    base_name = "KNNRegressor"
 
     def __init__(self, k: int = 3) -> None:
         self.k = k
+        self.name = f"{self.base_name}(k={self.k})"
         self._features: list[list[float]] = []
         self._targets: list[float] = []
 
@@ -178,7 +179,7 @@ def train_test_split(dataset: DataSet, test_ratio: float = 0.2, seed: int = 42) 
     indices = list(range(len(dataset.features)))
     random.Random(seed).shuffle(indices)
 
-    test_count = max(1, int((len(indices) * test_ratio) + 0.5))
+    test_count = max(1, round(len(indices) * test_ratio))
     if test_count >= len(indices):
         test_count = len(indices) - 1
 

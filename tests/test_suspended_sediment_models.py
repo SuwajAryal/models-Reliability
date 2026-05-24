@@ -28,7 +28,7 @@ class SuspendedSedimentModelTests(unittest.TestCase):
 
         self.assertEqual(len(results), 3)
         self.assertCountEqual(
-            names, [KNNRegressor.name, LinearRegressionGD.name, MeanRegressor.name]
+            names, [KNNRegressor().name, LinearRegressionGD.name, MeanRegressor.name]
         )
         self.assertLessEqual(results[0].rmse, results[1].rmse)
         self.assertLessEqual(results[1].rmse, results[2].rmse)
